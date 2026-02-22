@@ -1,10 +1,6 @@
 # Sepolia Weekend Lottery
 
-<img src="https://img.shields.io/badge/Solidity-0.8.19-363636?style=for-the-badge&logo=solidity" alt="Solidity" />
-<img src="https://img.shields.io/badge/Next.js-14-000000?style=for-the-badge&logo=nextdotjs" alt="Next.js" />
-<img src="https://img.shields.io/badge/Foundry-Framework-EF6C00?style=for-the-badge" alt="Foundry" />
-<img src="https://img.shields.io/badge/Account_Abstraction-ZeroDev-blue?style=for-the-badge" alt="AA" />
-<img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License" />
+<img src="https://img.shields.io/badge/Solidity-0.8.19-363636?style=for-the-badge&logo=solidity" alt="Solidity" /> <img src="https://img.shields.io/badge/Next.js-14-000000?style=for-the-badge&logo=nextdotjs" alt="Next.js" /> <img src="https://img.shields.io/badge/Foundry-Framework-EF6C00?style=for-the-badge" alt="Foundry" /> <img src="https://img.shields.io/badge/Account_Abstraction-ZeroDev-blue?style=for-the-badge" alt="AA" /> <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" alt="MIT License" />
 
 *A fair, transparent, and **gasless** on-chain lottery built with Foundry and Next.js. Featuring automated 72h cycles and sponsored entries via Account Abstraction.*
 
