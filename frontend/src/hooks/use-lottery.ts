@@ -185,6 +185,41 @@ export function useLottery() {
     }
   };
 
+  const pickWinner = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const wallet = await getWallet();
+      if (!wallet) throw new Error("No wallet connected");
+
+      const provider = await wallet.getEthereumProvider();
+      const walletClient = await import("viem").then((m) =>
+        m.createWalletClient({
+          account: wallet.address as Address,
+          chain: sepolia,
+          transport: m.custom(provider),
+        }),
+      );
+
+      const hash = await walletClient.writeContract({
+        address: LOTTERY_ADDRESS,
+        abi: LOTTERY_ABI,
+        functionName: "performUpkeep",
+        args: ["0x"],
+      });
+
+      setTxHash(hash);
+      await publicClient.waitForTransactionReceipt({ hash });
+      await fetchContractData();
+    } catch (err: unknown) {
+      console.error(err);
+      const message = err instanceof Error ? err.message : "Unknown error";
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const startWeekendLottery = async (durationSeconds: number = 259200) => {
     setIsLoading(true);
     setError(null);
@@ -295,6 +330,7 @@ export function useLottery() {
     smartAccountAddress,
     // Actions
     enterLottery,
+    pickWinner,
     startWeekendLottery,
     refresh: fetchContractData,
   };

@@ -8,15 +8,17 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useLottery } from "@/hooks/use-lottery";
-import { Loader2, Trophy, RefreshCw } from "lucide-react";
+import { Loader2, Trophy, RefreshCw, Gavel } from "lucide-react";
 
 export function OwnerPanel() {
   const {
     isLotteryActive,
     playersCount,
     startWeekendLottery,
+    pickWinner,
     isLoading,
     totalPrize,
+    timeRemaining,
   } = useLottery();
 
   // Default to 3 days (in seconds, but input is days for UX)
@@ -29,7 +31,34 @@ export function OwnerPanel() {
         <CardDescription>Only visible to the contract owner</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        {isLotteryActive ? (
+        {isLotteryActive && timeRemaining === 0n ? (
+          <div className="flex flex-col gap-4">
+            <div className="rounded-lg bg-slate-900/50 p-4">
+              <p className="text-sm text-slate-400">Current Prize Pool</p>
+              <p className="text-2xl font-bold text-white mb-2">
+                {totalPrize} ETH
+              </p>
+              <p className="text-sm text-slate-400">Players: {playersCount}</p>
+            </div>
+
+            <p className="text-xs text-center text-amber-400 animate-pulse">
+              Timer expired. Pick the winner to distribute the prize.
+            </p>
+
+            <Button
+              onClick={pickWinner}
+              disabled={isLoading}
+              className="w-full bg-amber-500 hover:bg-amber-600 text-black"
+            >
+              {isLoading ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Gavel className="mr-2 h-4 w-4" />
+              )}
+              Pick Winner Now
+            </Button>
+          </div>
+        ) : isLotteryActive ? (
           <div className="flex flex-col gap-4">
             <div className="rounded-lg bg-slate-900/50 p-4">
               <p className="text-sm text-slate-400">Current Prize Pool</p>
@@ -50,6 +79,7 @@ export function OwnerPanel() {
                 Duration (Days)
               </label>
               <input
+                title="duration"
                 type="number"
                 min="1"
                 step="1"
