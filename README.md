@@ -77,7 +77,9 @@ graph TD
 - **Premium Responsive UI**: A dark, high-end aesthetic inspired by modern Web3 apps.
 - **Linear Header**: Sleek, horizontal navigation with quick-copy Smart Account link.
 - **Interactive FAQ**: Explaining pricing models and gas sponsorship in detail.
-- **Automated Cycles**: The contract is designed for 72h automated lottery rounds.
+- **Automated Cycles**: The contract is designed for 72h automated lottery rounds via Chainlink Automation.
+- **Winner Banner**: Displays the last winner's Smart Account address, prize amount, and round ID once the lottery closes. Highlights "That's you!" if the connected user won.
+- **On-chain Verification**: Every winner announcement includes a direct link to the `performUpkeep` transaction on Etherscan Sepolia — proof that the prize was transferred automatically without manual intervention.
 - **Security First**: Fuzz testing, access controls, and reentrancy protection.
 
 ---

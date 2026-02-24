@@ -17,6 +17,13 @@ const publicClient = createPublicClient({
   transport: http("https://ethereum-sepolia.publicnode.com"), // Ankr was failing, trying PublicNode
 });
 
+export type WinnerInfo = {
+  winner: Address;
+  prize: string;
+  lotteryId: bigint;
+  txHash: `0x${string}`;
+};
+
 export function useLottery() {
   const { user } = usePrivy();
   const { wallets } = useWallets();
@@ -29,6 +36,8 @@ export function useLottery() {
   const [players, setPlayers] = useState<Address[]>([]);
   const [timeRemaining, setTimeRemaining] = useState<bigint>(0n);
   const [endTimestamp, setEndTimestamp] = useState<bigint>(0n);
+
+  const [lastWinner, setLastWinner] = useState<WinnerInfo | null>(null);
 
   // UI State
   const [isLoading, setIsLoading] = useState(false);
@@ -121,12 +130,50 @@ export function useLottery() {
     }
   }, []);
 
+  const fetchLastWinner = useCallback(async () => {
+    if (!LOTTERY_ADDRESS) return;
+    try {
+      const currentBlock = await publicClient.getBlockNumber();
+      const fromBlock = currentBlock > 10000n ? currentBlock - 10000n : 0n;
+
+      const logs = await publicClient.getLogs({
+        address: LOTTERY_ADDRESS,
+        abi: LOTTERY_ABI,
+        eventName: "LotteryWinnerPicked",
+        fromBlock,
+        toBlock: "latest",
+      });
+
+      if (logs.length === 0) { setLastWinner(null); return; }
+
+      const latest = logs[logs.length - 1];
+      if (!latest.transactionHash) return;
+
+      setLastWinner({
+        winner: latest.args.winner as Address,
+        prize: formatEther(latest.args.prize as bigint),
+        lotteryId: latest.args.lotteryId as bigint,
+        txHash: latest.transactionHash,
+      });
+    } catch (err) {
+      console.error("Error fetching winner event:", err);
+    }
+  }, []);
+
   // Initial fetch + interval
   useEffect(() => {
     fetchContractData();
+    fetchLastWinner();
     const interval = setInterval(fetchContractData, 5000); // Poll every 5s
     return () => clearInterval(interval);
-  }, [fetchContractData]);
+  }, [fetchContractData, fetchLastWinner]);
+
+  // Re-fetch winner when lottery closes
+  useEffect(() => {
+    if (!isLotteryActive) {
+      fetchLastWinner();
+    }
+  }, [isLotteryActive, fetchLastWinner]);
 
   // Actions
   const getWallet = useCallback(async () => {
@@ -328,6 +375,7 @@ export function useLottery() {
     error,
     userAddress: user?.wallet?.address,
     smartAccountAddress,
+    lastWinner,
     // Actions
     enterLottery,
     pickWinner,

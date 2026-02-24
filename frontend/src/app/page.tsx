@@ -2,6 +2,7 @@
 
 import { LotteryCard } from "@/components/lottery-card";
 import { OwnerPanel } from "@/components/owner-panel";
+import { WinnerBanner } from "@/components/winner-banner";
 import { useLottery } from "@/hooks/use-lottery";
 import { Clock, Timer } from "lucide-react";
 
@@ -45,6 +46,8 @@ export default function Home() {
 
       <div className="w-full max-w-md space-y-8">
         <LotteryCard />
+
+        <WinnerBanner />
 
         {isOwner && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
