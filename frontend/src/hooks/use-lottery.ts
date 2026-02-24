@@ -136,7 +136,7 @@ export function useLottery() {
       const currentBlock = await publicClient.getBlockNumber();
       const fromBlock = currentBlock > 10000n ? currentBlock - 10000n : 0n;
 
-      const logs = await publicClient.getLogs({
+      const logs = await publicClient.getContractEvents({
         address: LOTTERY_ADDRESS,
         abi: LOTTERY_ABI,
         eventName: "LotteryWinnerPicked",
